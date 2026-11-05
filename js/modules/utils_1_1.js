@@ -1,0 +1,1 @@
+export const $g=s=>document.querySelector(s);

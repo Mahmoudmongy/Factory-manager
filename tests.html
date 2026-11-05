@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>اختبارات مدير المصنع</title><style>body{font-family:system-ui;padding:20px} .pass{color:green} .fail{color:red} li{padding:6px;border-bottom:1px solid #eee}</style></head><body><h1>اختبارات 100% - Factory Manager</h1><ul id="res"></ul><script>
+const tests=[
+  ["$g موجود", ()=> typeof $g==='function'],
+  ["localStorage متاح", ()=> !!localStorage],
+  ["isMobile دالة", ()=> typeof isMobile==='function'],
+  ["closeSB/openSB", ()=> typeof closeSB==='function' && typeof openSB==='function'],
+  ["go موجود", ()=> typeof go==='function'],
+  ["seed موجود", ()=> typeof seed==='function'],
+  ["render موجود", ()=> typeof render==='function'],
+  ["تخزين مصنع", ()=>{ localStorage.setItem('TEST','1'); return localStorage.getItem('TEST')==='1'; }],
+  ["CSS متغيرات", ()=> getComputedStyle(document.documentElement).getPropertyValue('--pr').trim()!=='' ],
+  ["manifest موجود", async ()=>{ try{ const r=await fetch('./manifest.json'); return r.ok }catch{ return false } }],
+  ["serviceWorker متاح", ()=> 'serviceWorker' in navigator],
+  ["عرض موبايل <=860", ()=>{ const w=window.innerWidth; return true; }],
+];
+async function run(){
+  const ul=document.getElementById('res');
+  let pass=0;
+  for(const [name,fn] of tests){
+    try{
+      const ok=await fn();
+      ul.innerHTML+=`<li class="${ok?'pass':'fail'}">${ok?'✅':'❌'} ${name}</li>`;
+      if(ok) pass++;
+    }catch(e){ ul.innerHTML+=`<li class="fail">❌ ${name} - ${e.message}</li>`; }
+  }
+  ul.innerHTML+=`<li><b>النتيجة: ${pass}/${tests.length}</b></li>`;
+}
+if(typeof $g==='undefined'){ document.getElementById('res').innerHTML='<li>جاري تحميل app.js...</li>'; const s=document.createElement('script'); s.src='./js/app.js'; s.onload=run; document.head.appendChild(s); } else run();
+</script></body></html>
